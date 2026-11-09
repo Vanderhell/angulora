@@ -1,0 +1,8 @@
+build/
+build-*/
+*.o
+*.a
+*.elf
+*.map
+*.gcda
+*.gcno
