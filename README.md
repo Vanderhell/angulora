@@ -1,59 +1,55 @@
-# angulora
+# Angulora
 
-Angulora is a standalone C99 angle and phase library for deterministic modular phase handling, tick conversion, rotations and bounded trigonometric transforms.
+Deterministic fixed-point angle, phase, polar/cartesian and motor-angle calculations.
 
-## Scope
+## Overview
+**Trigonometry and angle transforms.** Deterministic fixed-point angle, phase, polar/cartesian and motor-angle calculations.
 
-The package contains 25 public headers and 8 implementation units. It is portable C99, uses no mandatory heap or operating-system service, and keeps caller-owned state explicit where applicable.
+## Engineering problem
+Embedded control and motion firmware needs bounded angle transforms without floating-point or hidden state.
 
-## Build and test
+## Features
+- Portable C99-oriented implementation.
+- Deterministic integer or fixed-point behavior documented at function level.
+- No mandatory heap, threads or operating-system services.
+- Separate translation units for selective linking.
 
+## Architecture
+The public surface consists of 9 headers and 9 callable API entries under include/. Implementations are in src/ and tests are in tests/. State, buffers and output ownership are explicit in each header contract.
+
+## Public API
+The complete symbol-by-symbol reference is in docs/API_REFERENCE.md. It lists every public header, callable symbol, include path and available contract comment.
+
+## Integration
 ```sh
 cmake -S . -B build -DANGULORA_BUILD_TESTS=ON
-cmake --build build --config Release
-ctest --test-dir build --output-on-failure -C Release
+cmake --build build --parallel
+ctest --test-dir build --output-on-failure
 ```
 
-## Validation status
+For minimal firmware, include only the required header and compile the corresponding source translation unit. No collection-wide dependency is required.
 
-Host validation is run during extraction. ESP32-S3 validation and isolated footprint measurements are pending unless explicitly recorded; no hardware result is claimed.
+## Configuration and dependencies
+The CMake test option is ANGULORA_BUILD_TESTS. The library has no mandatory third-party dependency. Platform-specific link requirements are documented in CMake and the affected API header.
 
-## Architecture and integration
+## Numeric and safety contracts
+Read the individual public header before use. It defines widths, representation, valid ranges, rounding, overflow/saturation/wrap behavior, invalid-input handling and whether output is left unchanged on failure. APIs are stateless unless a caller-owned state object is explicitly present.
 
-Each operation is a separate stateless C99 translation unit with fixed-width
-inputs and caller-owned outputs. Add `include/` to the include path and link
-the `angulora` target, or compile only the required `src/*.c` files.
+## Testing and validation
+No enabled CTest tests; the current polar oracle is outside the isolated product boundary.
+See docs/TESTING.md for reproducible commands, coverage boundaries and hardware status.
 
-## API and configuration
+## Resource status
+Embedded flash, RAM, stack and cycle measurements are reported only when measured for this product and configuration. Unmeasured values are marked PENDING; host measurements are not MCU measurements.
 
-Public headers are under `include/angulora/trigonometry`. Contracts define
-phase units, fixed-point representation, rounding and invalid-input behavior.
-`ANGULORA_BUILD_TESTS` controls host tests; there are no mandatory runtime or
-third-party dependencies.
+## Hardware status
+Hardware validation is reported in docs/TESTING.md. HW NOT VERIFIED is used where no reproducible target run is available.
 
-## Resource and performance status
+## Limitations
+Preserved tests outside this product boundary are not silently treated as product coverage. Unsupported ranges and invalid inputs are defined by the public headers.
 
-No embedded flash, RAM, stack or cycle measurement is currently available.
-These values are `PENDING`, not estimates. The implementation uses no heap,
-threads or hidden global state.
+## Versioning and license
+Version 0.1.0. Public API compatibility is maintained within the 0.x series as documented changes are introduced. Apache License 2.0, copyright Vanderhell; see LICENSE and NOTICE.
 
-## Limitations and security
-
-The current host gate has no enabled CTest test; see `docs/TESTING.md`.
-Applications must validate external numeric inputs before conversion. The
-library does not provide cryptographic protection.
-
-## Version, license and origin
-
-The package is versioned independently and follows
-semantic-versioning intent until 1.0. It is Apache License 2.0, copyright
-Vanderhell. This repository is self-contained.
-
-## Name and origin
-
-Angulora combines angulus (angle) with ora (bounded measured form), reflecting predictable angular transforms.
-Its technical scope is angle and phase transformation.
-
-## License
-
-Apache License 2.0, copyright Vanderhell. See LICENSE and NOTICE.
+## Origin
+This repository is a self-contained product library. Historical provenance is maintained in the central catalog, while this repository documents the usable public API and its behavior.
