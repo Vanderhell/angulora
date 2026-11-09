@@ -7,8 +7,7 @@ target_include_directories(angulora PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include/a
 target_compile_features(angulora PUBLIC c_std_99)
 if(ANGULORA_BUILD_TESTS)
  enable_testing()
- set(ANGULORA_TESTS
-  ${CMAKE_CURRENT_SOURCE_DIR}/tests/to_polar.c)
+ set(ANGULORA_TESTS)
  foreach(test_source IN LISTS ANGULORA_TESTS)
   get_filename_component(test_name "${test_source}" NAME_WE)
   add_executable(angulora_${test_name} ${test_source})

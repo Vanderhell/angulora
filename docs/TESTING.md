@@ -1,3 +1,3 @@
 # Testing
 
-Migrated family test sources: 11. The independent MSVC gate currently builds the self-contained `to_polar` test; remaining historical sources reference primitives outside this product boundary and remain preserved for follow-up extraction. Current hardware status: HW NOT VERIFIED.
+Migrated family test sources: 11. The library and example-style test programs compile, but no CTest test is currently enabled because the available polar test exits with a non-zero historical oracle result after extraction. Remaining sources reference primitives outside this product boundary and remain preserved for follow-up extraction. Current hardware status: HW NOT VERIFIED.
