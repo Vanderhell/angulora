@@ -1,4 +1,4 @@
-#include "primitivecore/geometry/spatial/bounded/pc_stepper_microstep_phase_u32.h"
+#include "pc_stepper_microstep_phase_u32.h"
 #include <stddef.h>
 
 bool pc_stepper_microstep_phase_u32(uint32_t index, uint32_t steps_per_rev,

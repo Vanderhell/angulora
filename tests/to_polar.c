@@ -1,5 +1,5 @@
-#include "roundmath/pc_cpx_to_polar_q.h"
-#include "roundmath/pc_cartesian_to_polar_q.h"
+#include "pc_cpx_to_polar_q.h"
+#include "pc_cartesian_to_polar_q.h"
 #include <limits.h>
 #include <math.h>
 #include <stdint.h>

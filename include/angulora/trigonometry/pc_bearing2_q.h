@@ -22,4 +22,3 @@ bool rm_bearing2_q(int32_t origin_x, int32_t origin_y,
 #ifndef PC_PRIMITIVECORE_RM_BEARING2_Q_H
 #define PC_PRIMITIVECORE_RM_BEARING2_Q_H PRIMITIVECORE_RM_BEARING2_Q_H
 #endif
-

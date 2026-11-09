@@ -17,4 +17,3 @@ bool rm_mod_phase_unwrap_i32(uint32_t previous, uint32_t current,
 #ifndef PC_PRIMITIVECORE_MOD_PHASE_UNWRAP_I32_H
 #define PC_PRIMITIVECORE_MOD_PHASE_UNWRAP_I32_H PRIMITIVECORE_MOD_PHASE_UNWRAP_I32_H
 #endif
-

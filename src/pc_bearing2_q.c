@@ -1,4 +1,4 @@
-#include <primitivecore/trigonometry/angle/inverse/pc_bearing2_q.h>
+#include "pc_bearing2_q.h"
 #include <stddef.h>
 
 static const int64_t atan_turns_q32[31]={

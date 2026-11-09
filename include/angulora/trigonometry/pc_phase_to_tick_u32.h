@@ -17,4 +17,3 @@ bool rm_phase_to_tick_u32(uint32_t phase_q0_32, uint32_t ticks_per_cycle,
 #ifndef PC_PRIMITIVECORE_PHASE_TO_TICK_U32_H
 #define PC_PRIMITIVECORE_PHASE_TO_TICK_U32_H PRIMITIVECORE_PHASE_TO_TICK_U32_H
 #endif
-

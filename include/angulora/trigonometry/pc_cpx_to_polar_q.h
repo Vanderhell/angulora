@@ -2,7 +2,7 @@
 #define PRIMITIVECORE_PC_CPX_TO_POLAR_Q_H
 #include <stdbool.h>
 #include <stdint.h>
-#include "primitivecore/fixed_point/complex/q/pc_cpx_q.h"
+#include "pc_cpx_q.h"
 
 /* Return nearest-integer uint32 magnitude and approximate Q0.32 CCW phase.
  * Output pointers must be distinct; failure preserves both outputs. */

@@ -1,5 +1,5 @@
-#include "primitivecore/fixed_point/complex/q/pc_cpx_to_polar_q.h"
-#include "primitivecore/trigonometry/angle/inverse/pc_bearing2_q.h"
+#include "pc_cpx_to_polar_q.h"
+#include "pc_bearing2_q.h"
 #include <stddef.h>
 
 static uint64_t integer_sqrt_floor(uint64_t value)

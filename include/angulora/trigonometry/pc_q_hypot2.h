@@ -17,4 +17,3 @@ bool rm_q_hypot2(int32_t x, int32_t y, int32_t *out);
 #ifndef PC_PRIMITIVECORE_Q_HYPOT2_H
 #define PC_PRIMITIVECORE_Q_HYPOT2_H PRIMITIVECORE_Q_HYPOT2_H
 #endif
-

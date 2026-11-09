@@ -1,5 +1,5 @@
-#include <primitivecore/trigonometry/functions/coordinates/pc_cartesian_to_polar_q.h>
-#include <primitivecore/fixed_point/arithmetic/q_arithmetic/pc_q_hypot2.h>
+#include "pc_cartesian_to_polar_q.h"
+#include "pc_q_hypot2.h"
 #include <stddef.h>
 
 static const int64_t atan_turns_q32[31] = {

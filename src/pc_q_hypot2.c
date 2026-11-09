@@ -1,4 +1,4 @@
-#include <primitivecore/fixed_point/arithmetic/q_arithmetic/pc_q_hypot2.h>
+#include "pc_q_hypot2.h"
 #include <stddef.h>
 
 bool rm_q_hypot2(int32_t x, int32_t y, int32_t *out)
