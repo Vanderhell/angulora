@@ -1,7 +1,7 @@
 #include "pc_q_hypot2.h"
 #include <stddef.h>
 
-bool rm_q_hypot2(int32_t x, int32_t y, int32_t *out)
+bool pc_q_hypot2(int32_t x, int32_t y, int32_t *out)
 {
     uint64_t ax = x < 0 ? (uint64_t)(-(int64_t)x) : (uint64_t)x;
     uint64_t ay = y < 0 ? (uint64_t)(-(int64_t)y) : (uint64_t)y;

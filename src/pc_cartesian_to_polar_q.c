@@ -19,7 +19,7 @@ static int64_t shift_zero(int64_t v, unsigned n)
     return v < 0 ? -quotient : quotient;
 }
 
-bool rm_cartesian_to_polar_q(int16_t x_q15, int16_t y_q15,
+bool pc_cartesian_to_polar_q(int16_t x_q15, int16_t y_q15,
                              int32_t *radius_q15, uint32_t *phase_turns_q0_32)
 {
     int32_t radius;
@@ -27,7 +27,7 @@ bool rm_cartesian_to_polar_q(int16_t x_q15, int16_t y_q15,
     unsigned i;
     if (radius_q15 == NULL || phase_turns_q0_32 == NULL ||
         (const void *)radius_q15 == (const void *)phase_turns_q0_32) return false;
-    if (!rm_q_hypot2((int32_t)x_q15, (int32_t)y_q15, &radius)) return false;
+    if (!pc_q_hypot2((int32_t)x_q15, (int32_t)y_q15, &radius)) return false;
     if (x_q15 == 0 && y_q15 == 0) {
         *radius_q15 = 0;
         *phase_turns_q0_32 = 0u;

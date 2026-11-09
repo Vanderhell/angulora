@@ -17,7 +17,7 @@ static int64_t shift_zero(int64_t value,unsigned shift)
     return value<0?-q:q;
 }
 
-bool rm_bearing2_q(int32_t origin_x,int32_t origin_y,
+bool pc_bearing2_q(int32_t origin_x,int32_t origin_y,
                    int32_t target_x,int32_t target_y,
                    uint32_t *bearing_turns_q0_32)
 {

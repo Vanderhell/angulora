@@ -1,5 +1,5 @@
 #include "../include/pc_axis_angle_small_q.h"
-#include "../../../../include/roundmath/quat_normalize_q.h"
+/* Held-out cross-family validation source; dependency is outside this product. */
 #include <stddef.h>
 #include <stdint.h>
 #define ONE INT32_C(1073741824)

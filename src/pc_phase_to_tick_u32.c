@@ -1,7 +1,7 @@
 #include "pc_phase_to_tick_u32.h"
 #include <stddef.h>
 
-bool rm_phase_to_tick_u32(uint32_t phase_q0_32, uint32_t ticks_per_cycle,
+bool pc_phase_to_tick_u32(uint32_t phase_q0_32, uint32_t ticks_per_cycle,
                           uint32_t *tick)
 {
     uint64_t product;

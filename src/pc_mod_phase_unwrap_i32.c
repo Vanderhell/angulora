@@ -1,7 +1,7 @@
 #include "pc_mod_phase_unwrap_i32.h"
 #include <stddef.h>
 
-bool rm_mod_phase_unwrap_i32(uint32_t previous, uint32_t current,
+bool pc_mod_phase_unwrap_i32(uint32_t previous, uint32_t current,
                              int32_t *delta)
 {
     uint32_t forward;

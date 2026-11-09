@@ -1,5 +1,5 @@
 #include "../include/pc_angle_sector_center_q.h"
-#include "roundmath/phase_to_tick_u32.h"
+/* Held-out cross-family validation source; dependency is outside this product. */
 
 #include <stdint.h>
 
