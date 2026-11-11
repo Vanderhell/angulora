@@ -1,160 +1,27 @@
-﻿# Angulora API reference
-
-This reference explains every public header in the Angulora product. It is generated from the current headers and test sources; the header remains authoritative when a detail conflicts.
-
-## Reading the entries
-Each entry states the public symbol, implementation unit, contract, edge/failure behavior and a call extracted from the validating test source. The examples are evidence-oriented; adapt buffer ownership and numeric units to the application.
-
-## include/angulora/trigonometry/pc_bearing2_q.h
-
-**Public symbol:** pc_bearing2_q
-
-**Implementation unit:** src/pc_bearing2_q.c
-
-**Purpose and contract:** CORDIC estimate of bearing from an int32 origin to target as unsigned Q0.32 turns CCW from +X. Equal points return zero. Coordinates need not share a specific Q scale. Differential tests observed <= 16 phase-code error; this empirical limit is not a formal global bound.
-
-**Validation source:** No enabled test source was found by symbol search.
-
-**Test-derived call:**
-```c
-No test-derived call was found.;
-```
-
-**Integration notes:** use the exact fixed-width types and units shown in the declaration; check the boolean/status return before consuming an output pointer; do not assume overlap, rounding or overflow behavior beyond the contract above.
-
-## include/angulora/trigonometry/pc_cartesian_to_polar_q.h
-
-**Public symbol:** pc_cartesian_to_polar_q
-
-**Implementation unit:** src/pc_cartesian_to_polar_q.c
-
-**Purpose and contract:** Convert signed-Q15 Cartesian coordinates to nearest-even Q15 radius and counter-clockwise Q0.32 turns. The zero vector has phase zero. The phase uses bounded integer CORDIC approximation; observed phase error is <= 8 codes in the recorded differential campaign (not an exhaustive global bound).
-
-**Validation source:** tests/from_polar.c
-
-**Test-derived call:**
-```c
-pc_cartesian_to_polar_q((int16_t)x, (int16_t)y, &radius, &phase);
-```
-
-**Integration notes:** use the exact fixed-width types and units shown in the declaration; check the boolean/status return before consuming an output pointer; do not assume overlap, rounding or overflow behavior beyond the contract above.
-
-## include/angulora/trigonometry/pc_cpx_q.h
-
-**Public symbol:** pc_cpx_q
-
-**Implementation unit:** src/pc_cpx_q.c
-
-**Purpose and contract:** The public header contains the authoritative signature and input/output contract.
-
-**Validation source:** No enabled test source was found by symbol search.
-
-**Test-derived call:**
-```c
-No test-derived call was found.;
-```
-
-**Integration notes:** use the exact fixed-width types and units shown in the declaration; check the boolean/status return before consuming an output pointer; do not assume overlap, rounding or overflow behavior beyond the contract above.
-
-## include/angulora/trigonometry/pc_cpx_to_polar_q.h
-
-**Public symbol:** pc_cpx_to_polar_q
-
-**Implementation unit:** src/pc_cpx_to_polar_q.c
-
-**Purpose and contract:** Return nearest-integer uint32 magnitude and approximate Q0.32 CCW phase. Output pointers must be distinct; failure preserves both outputs.
-
-**Validation source:** tests/to_polar.c
-
-**Test-derived call:**
-```c
-pc_cpx_to_polar_q(value, &radius, &phase\);
-```
-
-**Integration notes:** use the exact fixed-width types and units shown in the declaration; check the boolean/status return before consuming an output pointer; do not assume overlap, rounding or overflow behavior beyond the contract above.
-
-## include/angulora/trigonometry/pc_mod_phase_unwrap_i32.h
-
-**Public symbol:** pc_mod_phase_unwrap_i32
-
-**Implementation unit:** src/pc_mod_phase_unwrap_i32.c
-
-**Purpose and contract:** Shortest signed delta on the uint32_t phase ring; antipodes are ambiguous.
-
-**Validation source:** No enabled test source was found by symbol search.
-
-**Test-derived call:**
-```c
-No test-derived call was found.;
-```
-
-**Integration notes:** use the exact fixed-width types and units shown in the declaration; check the boolean/status return before consuming an output pointer; do not assume overlap, rounding or overflow behavior beyond the contract above.
-
-## include/angulora/trigonometry/pc_phase_to_tick_u32.h
-
-**Public symbol:** pc_phase_to_tick_u32
-
-**Implementation unit:** src/pc_phase_to_tick_u32.c
-
-**Purpose and contract:** Map unsigned Q0.32 phase [0,1) to a tick in [0,ticks_per_cycle).
-
-**Validation source:** tests/test_exhaustive.c
-
-**Test-derived call:**
-```c
-pc_phase_to_tick_u32(q,8,&t)&&t==7);
-```
-
-**Integration notes:** use the exact fixed-width types and units shown in the declaration; check the boolean/status return before consuming an output pointer; do not assume overlap, rounding or overflow behavior beyond the contract above.
-
-## include/angulora/trigonometry/pc_q_hypot2.h
-
-**Public symbol:** pc_q_hypot2
-
-**Implementation unit:** src/pc_q_hypot2.c
-
-**Purpose and contract:** Nearest-even Euclidean norm of same-scale signed Q raw values. False on null output or int32 result overflow; failure preserves *out.
-
-**Validation source:** No enabled test source was found by symbol search.
-
-**Test-derived call:**
-```c
-No test-derived call was found.;
-```
-
-**Integration notes:** use the exact fixed-width types and units shown in the declaration; check the boolean/status return before consuming an output pointer; do not assume overlap, rounding or overflow behavior beyond the contract above.
-
-## include/angulora/trigonometry/pc_stepper_angle_from_steps_q.h
-
-**Public symbol:** pc_stepper_angle_from_steps_q
-
-**Implementation unit:** src/pc_stepper_angle_from_steps_q.c
-
-**Purpose and contract:** Convert signed integer steps to signed Q16.16 degrees using caller calibration. Zero steps/revolution or unrepresentable angle fails.
-
-**Validation source:** No enabled test source was found by symbol search.
-
-**Test-derived call:**
-```c
-No test-derived call was found.;
-```
-
-**Integration notes:** use the exact fixed-width types and units shown in the declaration; check the boolean/status return before consuming an output pointer; do not assume overlap, rounding or overflow behavior beyond the contract above.
-
-## include/angulora/trigonometry/pc_stepper_microstep_phase_u32.h
-
-**Public symbol:** pc_stepper_microstep_phase_u32
-
-**Implementation unit:** src/pc_stepper_microstep_phase_u32.c
-
-**Purpose and contract:** Map an unsigned microstep index to periodic unsigned Q0.32 revolution phase, nearest-even. steps_per_revolution must be nonzero.
-
-**Validation source:** tests/driver.c
-
-**Test-derived call:**
-```c
-pc_stepper_microstep_phase_u32(i,n,&o)||o!=e);
-```
-
-**Integration notes:** use the exact fixed-width types and units shown in the declaration; check the boolean/status return before consuming an output pointer; do not assume overlap, rounding or overflow behavior beyond the contract above.
-
+# API reference
+
+The public count is eight callable functions plus the `pc_cpx_q` value type (nine public header symbols total). The headers in `include/angulora/trigonometry/` are authoritative. All functions are deterministic C99 routines with caller-owned output storage and no allocation.
+
+| Public symbol | Inputs and output | Success, failure, rounding and limits | Direct test |
+|---|---|---|---|
+| `pc_bearing2_q` | Origin and target `int32_t` coordinates; output is counter-clockwise Q0.32 turns from +X. Coordinates may be any `int32_t`; same-scale coordinates are assumed. | Equal points return phase zero. Null output fails. CORDIC phase approximation; measured error campaign is in `docs/PERFORMANCE.md`, and is not a formal bound. | `test_audit.c`: axes, quadrants, equal points, extremes, 100,000 seeded origin/target pairs. |
+| `pc_cartesian_to_polar_q` | Signed Q15 `int16_t` x/y; outputs `int32_t` nearest-even radius in raw Q15 units and Q0.32 phase. | Zero vector maps to radius/phase zero. Null or aliased output pointers fail without writing either result. CORDIC phase; exact cardinal phases. Radius is same-scale Euclidean norm and can exceed `INT16_MAX`. | `test_audit.c`: full axis/quadrant boundary set, 100,000 seeded pairs, radius oracle, null/alias checks. |
+| `pc_cpx_q` | Public struct value `{ int32_t real; int32_t imag; }`; not a callable operation. | Represents signed Cartesian integer components. The type itself has no failure or rounding behavior. | `test_audit.c`: direct construction and field checks; also exercised as input to complex conversion. |
+| `pc_cpx_to_polar_q` | `pc_cpx_q` input; outputs nearest-integer `uint32_t` magnitude and counter-clockwise Q0.32 phase. | Output pointers must be non-null and distinct; failure preserves both. Zero maps to `(0,0)`. Magnitude is rounded to nearest-even. CORDIC phase. | `test_audit.c`: boundary Cartesian pairs, 100,000 seeded full-width pairs, magnitude/atan2 oracle, null/alias checks. |
+| `pc_mod_phase_unwrap_i32` | Previous/current unsigned Q0.32 phase codes; output shortest signed `int32_t` delta on the modulo-2^32 ring. | Null output fails. Exactly antipodal difference `0x80000000` is ambiguous and fails; all other differences map to the shortest signed delta. Modular arithmetic applies only to phase deltas. | `test_audit.c`: wrap, positive/negative limits, antipode, null, 100,000 seeded phase pairs. |
+| `pc_phase_to_tick_u32` | Q0.32 phase and nonzero ticks-per-cycle; output tick. | Null output or zero ticks-per-cycle fails without changing output. Maps by floor to `[0,ticks_per_cycle)`; no nearest rounding. | `test_audit.c`: phase/tick endpoints, `UINT32_MAX`, invalid count, 100,000 seeded pairs with an independent shift-add product reference. |
+| `pc_q_hypot2` | Same-scale signed `int32_t` x/y raw values; output nearest-even Euclidean norm as `int32_t`. | Null output or a rounded norm above `INT32_MAX` fails; output is preserved on failure. Uses integer square root. | `test_audit.c`: signed boundaries, representability failure, null, 100,000 seeded pairs against `sqrtl`. |
+| `pc_stepper_angle_from_steps_q` | Signed `int32_t` steps and nonzero `uint32_t` steps/revolution; output signed Q16.16 degrees. | Null output, zero calibration, or rounded value outside `int32_t` fails without changing output. Exact rational scaling, nearest-even rounding, symmetric for negative steps. | `test_audit.c`: positive/negative ties, zero calibration, extremes, 100,000 seeded cases against independent bitwise long division. |
+| `pc_stepper_microstep_phase_u32` | Unsigned microstep index and nonzero steps/revolution; output periodic Q0.32 turn phase. | Null output or zero count fails preserving output. Index is reduced modulo steps/revolution, then phase is rounded nearest-even. Rounding is on the modulo phase representation. | `test_audit.c`: periodicity, boundary counts, invalid count, 100,000 seeded cases against independent bitwise long division. |
+
+## Representation notes
+
+- Q0.32 is a modulo-one-turn code: `0x00000000` is zero/full turn; `0x40000000` is one quarter-turn; `0x80000000` is a half-turn.
+- Q15 Cartesian raw values are signed `int16_t`; their Euclidean radius is returned in `int32_t` because the radius may be greater than one component.
+- Q16.16 motor angles are signed degrees scaled by 65,536.
+- Fixed-point conversion rounding is nearest-even where stated. `pc_phase_to_tick_u32` is floor mapping.
+- `pc_mod_phase_unwrap_i32` reports only a shortest signed phase difference. It does not infer a number of complete turns.
+
+## Verification limits
+
+CORDIC phase error statistics are measured on a deterministic, boundary-enriched campaign and are not proof of a global worst-case bound. Full input spaces are not exhaustively enumerated. Consult `docs/TESTING.md` and `docs/PERFORMANCE.md` for compiler, sanitizer, hardware and timing evidence.

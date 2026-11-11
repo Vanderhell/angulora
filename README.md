@@ -11,7 +11,7 @@ Embedded control and motion firmware needs bounded angle transforms without floa
 
 ## What is included
 
-- Portable C99-oriented implementation.
+- Portable C99 implementation.
 - Deterministic integer or fixed-point behavior documented at function level.
 - No mandatory heap, threads or operating-system services.
 - Separate translation units for selective linking.
@@ -34,18 +34,17 @@ For a minimal integration, include only the required public header and compile t
 | Check every function and contract | [API reference](docs/API_REFERENCE.md) |
 | Reproduce tests and see validation limits | [Testing report](docs/TESTING.md) |
 | Review design and dependencies | [Architecture](docs/ARCHITECTURE.md) |
-| See measured or pending performance data | [Performance](docs/PERFORMANCE.md) |
+| See measured hardware performance data | [Performance](docs/PERFORMANCE.md) |
 
 ## At a glance
 
-The public surface consists of 9 headers and 9 callable API entries under include/. Implementations are in src/ and tests are in tests/. State, buffers and output ownership are explicit in each header contract.
+The public surface consists of eight callable C functions plus the `pc_cpx_q` value type (nine public header entries). Implementations are in `src/`; direct audit tests are in `tests/test_audit.c` and are registered with CTest.
 
 The CMake test option is ANGULORA_BUILD_TESTS. The library has no mandatory third-party dependency. Platform-specific link requirements are documented in CMake and the affected API header.
 
 ## Validation status
 
-No enabled CTest tests; the current polar oracle is outside the isolated product boundary.
-See docs/TESTING.md for reproducible commands, coverage boundaries and hardware status.
+All eight callable functions and the public `pc_cpx_q` type have direct enabled checks using independent references; the checks remain active in Release. GCC, ClangCL and MSVC Debug/Release passed locally. The ESP32-S3 validation firmware passed 9/9 public header entries. The observed CORDIC maxima were 6, 6 and 7 Q0.32 codes for bearing, Q15 polar and complex polar respectively; these are measured sample maxima, not proven global bounds. Sanitizer and remote CI results are recorded in `docs/TESTING.md`.
 
 Detailed overflow, rounding, invalid-input, memory-ownership and state rules are defined by the public headers and API reference. Do not infer them from the product name alone.
 
