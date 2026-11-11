@@ -35,7 +35,7 @@ cmake --build build --parallel
 ctest --test-dir build --output-on-failure
 ```
 
-GitHub Actions is configured for GCC and Clang Debug/Release, MSVC Debug/Release, ASan and UBSan. The final remote run for the verified commit is linked below after it completes.
+GitHub Actions is configured for GCC and Clang Debug/Release, MSVC Debug/Release, ASan and UBSan. Run [43056702750](https://github.com/Vanderhell/angulora/actions/runs/43056702750) on commit `d7e9e66a48de8e939c673eafc0bc8566aa84a4ac` passed all 8 jobs. A documentation-only follow-up commit records this run; its final workflow result is reported after completion.
 
 ## ESP32-S3 hardware
 
