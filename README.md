@@ -1,4 +1,4 @@
-﻿# Angulora
+# Angulora
 ![CI](https://github.com/Vanderhell/angulora/actions/workflows/ci.yml/badge.svg) ![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg) ![Language](https://img.shields.io/badge/language-C99-informational.svg)
 
 ![Angulora banner](docs/banner.svg)
@@ -24,7 +24,7 @@ cmake --build build --parallel
 ctest --test-dir build --output-on-failure
 ```
 
-For a minimal integration, include only the required public header and compile the matching source unit. The library does not require the rest of PrimitiveCore.
+For a minimal integration, include only the required public header and compile the matching source unit.
 
 ## Documentation
 
@@ -51,7 +51,3 @@ Detailed overflow, rounding, invalid-input, memory-ownership and state rules are
 ## License
 
 Apache License 2.0, copyright Vanderhell. See [LICENSE](LICENSE) and [NOTICE](NOTICE).
-
-## Origin
-
-A standalone embedded-C library extracted from the PrimitiveCore product catalog. It is independently buildable and linkable.
