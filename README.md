@@ -38,13 +38,13 @@ For a minimal integration, include only the required public header and compile t
 
 ## At a glance
 
-The public surface consists of eight callable C functions plus the `pc_cpx_q` value type (nine public header entries). Implementations are in `src/`; direct audit tests are in `tests/test_audit.c` and are registered with CTest.
+The public surface consists of eight callable C functions plus a complex fixed-point value type (nine public header entries). Implementations are in `src/`; direct audit tests are in `tests/test_audit.c` and are registered with CTest.
 
 The CMake test option is ANGULORA_BUILD_TESTS. The library has no mandatory third-party dependency. Platform-specific link requirements are documented in CMake and the affected API header.
 
 ## Validation status
 
-All eight callable functions and the public `pc_cpx_q` type have direct enabled checks using independent references; the checks remain active in Release. GCC, ClangCL and MSVC Debug/Release passed locally. The ESP32-S3 validation firmware passed 9/9 public header entries. The observed CORDIC maxima were 6, 6 and 7 Q0.32 codes for bearing, Q15 polar and complex polar respectively; these are measured sample maxima, not proven global bounds. Sanitizer and remote CI results are recorded in `docs/TESTING.md`.
+All eight callable functions and the public complex fixed-point type have direct enabled checks using independent references; the checks remain active in Release. GCC, ClangCL and MSVC Debug/Release passed locally. The ESP32-S3 validation firmware passed 9/9 public header entries. The observed CORDIC maxima were 6, 6 and 7 Q0.32 codes for bearing, Q15 polar and complex polar respectively; these are measured sample maxima, not proven global bounds. Sanitizer and remote CI results are recorded in `docs/TESTING.md`.
 
 Detailed overflow, rounding, invalid-input, memory-ownership and state rules are defined by the public headers and API reference. Do not infer them from the product name alone.
 
