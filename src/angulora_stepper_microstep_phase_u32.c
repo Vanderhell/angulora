@@ -1,7 +1,7 @@
-#include "pc_stepper_microstep_phase_u32.h"
+#include <angulora/trigonometry/stepper_microstep_phase_u32.h>
 #include <stddef.h>
 
-bool pc_stepper_microstep_phase_u32(uint32_t index, uint32_t steps_per_rev,
+bool angulora_stepper_microstep_phase_u32(uint32_t index, uint32_t steps_per_rev,
                                     uint32_t *phase_q0_32)
 {
     uint64_t product, quotient, remainder;

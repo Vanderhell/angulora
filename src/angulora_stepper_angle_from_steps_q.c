@@ -1,8 +1,8 @@
-#include "pc_stepper_angle_from_steps_q.h"
+#include <angulora/trigonometry/stepper_angle_from_steps_q.h>
 #include <limits.h>
 #include <stddef.h>
 
-bool pc_stepper_angle_from_steps_q(int32_t steps, uint32_t steps_per_rev,
+bool angulora_stepper_angle_from_steps_q(int32_t steps, uint32_t steps_per_rev,
                                    int32_t *angle_q16_16_degrees)
 {
     const int64_t numerator = (int64_t)steps * INT64_C(360) * INT64_C(65536);

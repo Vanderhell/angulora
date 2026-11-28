@@ -1,12 +1,12 @@
-#include "pc_bearing2_q.h"
-#include "pc_cartesian_to_polar_q.h"
-#include "pc_cpx_q.h"
-#include "pc_cpx_to_polar_q.h"
-#include "pc_mod_phase_unwrap_i32.h"
-#include "pc_phase_to_tick_u32.h"
-#include "pc_q_hypot2.h"
-#include "pc_stepper_angle_from_steps_q.h"
-#include "pc_stepper_microstep_phase_u32.h"
+#include <angulora/trigonometry/bearing2_q.h>
+#include <angulora/trigonometry/cartesian_to_polar_q.h>
+#include <angulora/trigonometry/cpx_q.h>
+#include <angulora/trigonometry/cpx_to_polar_q.h>
+#include <angulora/trigonometry/mod_phase_unwrap_i32.h>
+#include <angulora/trigonometry/phase_to_tick_u32.h>
+#include <angulora/trigonometry/q_hypot2.h>
+#include <angulora/trigonometry/stepper_angle_from_steps_q.h>
+#include <angulora/trigonometry/stepper_microstep_phase_u32.h>
 
 #include <limits.h>
 #include <math.h>
@@ -61,6 +61,21 @@ static int64_t round_even(long double x)
     int64_t q = (int64_t)base;
     if (fraction > 0.5L || (fraction == 0.5L && (q & 1) != 0)) ++q;
     return negative ? -q : q;
+}
+
+static uint32_t reference_hypot_i32(int32_t x, int32_t y)
+{
+    const int64_t sx = x, sy = y;
+    const uint64_t ax = (uint64_t)(sx < 0 ? -sx : sx);
+    const uint64_t ay = (uint64_t)(sy < 0 ? -sy : sy);
+    const uint64_t squared = ax * ax + ay * ay;
+    uint64_t low = 0u, high = UINT32_MAX;
+    while (low < high) {
+        const uint64_t middle = low + (high - low + 1u) / 2u;
+        if (middle * middle <= squared) low = middle;
+        else high = middle - 1u;
+    }
+    return (uint32_t)(low + (squared - low * low > low ? 1u : 0u));
 }
 
 static uint32_t phase_reference(long double x, long double y)
@@ -121,7 +136,7 @@ static int check_bearing(phase_stats *stats, int32_t ox, int32_t oy,
     const int64_t dy = (int64_t)ty - oy;
     uint32_t out = UINT32_C(0xdeadbeef);
     uint32_t expected;
-    if (!pc_bearing2_q(ox, oy, tx, ty, &out)) return 1;
+    if (!angulora_bearing2_q(ox, oy, tx, ty, &out)) return 1;
     expected = phase_reference((long double)dx, (long double)dy);
     if (dx == 0 && dy == 0) return out == 0u ? 0 : 2;
     record_phase(stats, out, expected, (long double)dx, (long double)dy);
@@ -132,10 +147,10 @@ static int check_cartesian(phase_stats *stats, int16_t x, int16_t y)
 {
     int32_t radius = -77;
     uint32_t phase = UINT32_C(0xdeadbeef);
-    const int64_t expected_radius = round_even(sqrtl((long double)x * x + (long double)y * y));
+    const uint32_t expected_radius = reference_hypot_i32(x, y);
     const uint32_t expected_phase = phase_reference((long double)x, (long double)y);
-    if (!pc_cartesian_to_polar_q(x, y, &radius, &phase)) return 1;
-    if (radius != expected_radius) return 2;
+    if (!angulora_cartesian_to_polar_q(x, y, &radius, &phase)) return 1;
+    if (radius != (int32_t)expected_radius) return 2;
     if (x == 0 && y == 0) return phase == 0u ? 0 : 3;
     record_phase(stats, phase, expected_phase, x, y);
     return circular_error(phase, expected_phase) <= 8u ? 0 : 4;
@@ -143,12 +158,12 @@ static int check_cartesian(phase_stats *stats, int16_t x, int16_t y)
 
 static int check_complex(phase_stats *stats, int32_t x, int32_t y)
 {
-    const pc_cpx_q value = {x, y};
+    const angulora_cpx_q value = {x, y};
     uint32_t radius = UINT32_C(0x12345678), phase = UINT32_C(0x87654321);
-    const int64_t expected_radius = round_even(sqrtl((long double)x * x + (long double)y * y));
+    const uint32_t expected_radius = reference_hypot_i32(x, y);
     const uint32_t expected_phase = phase_reference(x, y);
-    if (!pc_cpx_to_polar_q(value, &radius, &phase)) return 1;
-    if (radius != (uint32_t)expected_radius) return 2;
+    if (!angulora_cpx_to_polar_q(value, &radius, &phase)) return 1;
+    if (radius != expected_radius) return 2;
     if (x == 0 && y == 0) return phase == 0u ? 0 : 3;
     record_phase(stats, phase, expected_phase, x, y);
     return circular_error(phase, expected_phase) <= 16u ? 0 : 4;
@@ -217,8 +232,8 @@ static int test_bearing(void)
         if (tx == ox && ty == oy) tx = tx == INT32_MAX ? tx - 1 : tx + 1;
         CHECK(check_bearing(&stats, ox, oy, tx, ty) == 0);
     }
-    CHECK(!pc_bearing2_q(0, 0, 1, 1, NULL));
-    print_phase_stats("pc_bearing2_q", &stats);
+    CHECK(!angulora_bearing2_q(0, 0, 1, 1, NULL));
+    print_phase_stats("angulora_bearing2_q", &stats);
     return 0;
 }
 
@@ -238,17 +253,17 @@ static int test_cartesian(void)
     {
         int32_t radius = 77;
         uint32_t phase = 88u;
-        CHECK(!pc_cartesian_to_polar_q(1, 1, NULL, &phase) && phase == 88u);
-        CHECK(!pc_cartesian_to_polar_q(1, 1, &radius, NULL) && radius == 77);
-        CHECK(!pc_cartesian_to_polar_q(1, 1, &radius, (uint32_t *)&radius) && radius == 77);
+        CHECK(!angulora_cartesian_to_polar_q(1, 1, NULL, &phase) && phase == 88u);
+        CHECK(!angulora_cartesian_to_polar_q(1, 1, &radius, NULL) && radius == 77);
+        CHECK(!angulora_cartesian_to_polar_q(1, 1, &radius, (uint32_t *)&radius) && radius == 77);
     }
-    print_phase_stats("pc_cartesian_to_polar_q", &stats);
+    print_phase_stats("angulora_cartesian_to_polar_q", &stats);
     return 0;
 }
 
 static int test_complex_type(void)
 {
-    const pc_cpx_q typed = {INT32_MIN, INT32_MAX};
+    const angulora_cpx_q typed = {INT32_MIN, INT32_MAX};
     CHECK(typed.real == INT32_MIN && typed.imag == INT32_MAX);
     return 0;
 }
@@ -259,7 +274,7 @@ static int test_complex(void)
     phase_stats stats = {0u, 0.0L, 0.0L, 0.0L, 0.0L, 0u};
     unsigned i, j;
     uint32_t n;
-    const pc_cpx_q typed = {INT32_MIN, INT32_MAX};
+    const angulora_cpx_q typed = {INT32_MIN, INT32_MAX};
     for (i = 0u; i < 7u; ++i) for (j = 0u; j < 7u; ++j)
         CHECK(check_complex(&stats, edge[i], edge[j]) == 0);
     for (n = 0u; n < 100000u; ++n) {
@@ -269,11 +284,11 @@ static int test_complex(void)
     }
     {
         uint32_t radius = 123u, phase = 456u;
-        CHECK(!pc_cpx_to_polar_q(typed, NULL, &phase) && phase == 456u);
-        CHECK(!pc_cpx_to_polar_q(typed, &radius, NULL) && radius == 123u);
-        CHECK(!pc_cpx_to_polar_q(typed, &radius, &radius) && radius == 123u);
+        CHECK(!angulora_cpx_to_polar_q(typed, NULL, &phase) && phase == 456u);
+        CHECK(!angulora_cpx_to_polar_q(typed, &radius, NULL) && radius == 123u);
+        CHECK(!angulora_cpx_to_polar_q(typed, &radius, &radius) && radius == 123u);
     }
-    print_phase_stats("pc_cpx_to_polar_q", &stats);
+    print_phase_stats("angulora_cpx_to_polar_q", &stats);
     return 0;
 }
 
@@ -281,25 +296,25 @@ static int test_unwrap(void)
 {
     uint32_t n;
     int32_t out = 123;
-    CHECK(pc_mod_phase_unwrap_i32(0u, 0u, &out) && out == 0);
-    CHECK(pc_mod_phase_unwrap_i32(UINT32_MAX, 0u, &out) && out == 1);
-    CHECK(pc_mod_phase_unwrap_i32(0u, UINT32_MAX, &out) && out == -1);
-    CHECK(pc_mod_phase_unwrap_i32(0u, UINT32_C(0x7fffffff), &out) && out == INT32_MAX);
-    CHECK(pc_mod_phase_unwrap_i32(0u, UINT32_C(0x80000001), &out) && out == -INT32_MAX);
+    CHECK(angulora_mod_phase_unwrap_i32(0u, 0u, &out) && out == 0);
+    CHECK(angulora_mod_phase_unwrap_i32(UINT32_MAX, 0u, &out) && out == 1);
+    CHECK(angulora_mod_phase_unwrap_i32(0u, UINT32_MAX, &out) && out == -1);
+    CHECK(angulora_mod_phase_unwrap_i32(0u, UINT32_C(0x7fffffff), &out) && out == INT32_MAX);
+    CHECK(angulora_mod_phase_unwrap_i32(0u, UINT32_C(0x80000001), &out) && out == -INT32_MAX);
     out = 123;
-    CHECK(!pc_mod_phase_unwrap_i32(0u, UINT32_C(0x80000000), &out) && out == 123);
-    CHECK(!pc_mod_phase_unwrap_i32(0u, 1u, NULL));
+    CHECK(!angulora_mod_phase_unwrap_i32(0u, UINT32_C(0x80000000), &out) && out == 123);
+    CHECK(!angulora_mod_phase_unwrap_i32(0u, 1u, NULL));
     for (n = 0u; n < 100000u; ++n) {
         const uint32_t a = random_u32();
         const uint32_t b = random_u32();
         const uint32_t forward = b - a;
         if (forward == UINT32_C(0x80000000)) {
             out = 91;
-            CHECK(!pc_mod_phase_unwrap_i32(a, b, &out) && out == 91);
+            CHECK(!angulora_mod_phase_unwrap_i32(a, b, &out) && out == 91);
         } else {
             const int32_t expected = forward < UINT32_C(0x80000000)
                 ? (int32_t)forward : -(int32_t)(0u - forward);
-            CHECK(pc_mod_phase_unwrap_i32(a, b, &out) && out == expected);
+            CHECK(angulora_mod_phase_unwrap_i32(a, b, &out) && out == expected);
         }
     }
     return 0;
@@ -312,11 +327,11 @@ static int test_phase_tick(void)
         UINT32_C(0x7fffffff), UINT32_C(0x80000000), UINT32_C(0xc0000000), UINT32_MAX};
     static const uint32_t ticks[] = {1u, 2u, 3u, 7u, 8u, 65535u, UINT32_MAX};
     unsigned i, j;
-    CHECK(!pc_phase_to_tick_u32(0u, 0u, &out) && out == 19u);
-    CHECK(!pc_phase_to_tick_u32(0u, 1u, NULL));
+    CHECK(!angulora_phase_to_tick_u32(0u, 0u, &out) && out == 19u);
+    CHECK(!angulora_phase_to_tick_u32(0u, 1u, NULL));
     for (i = 0u; i < sizeof phases / sizeof phases[0]; ++i)
         for (j = 0u; j < sizeof ticks / sizeof ticks[0]; ++j) {
-            CHECK(pc_phase_to_tick_u32(phases[i], ticks[j], &out));
+            CHECK(angulora_phase_to_tick_u32(phases[i], ticks[j], &out));
             CHECK(out == phase_tick_reference(phases[i], ticks[j]));
             CHECK(out < ticks[j]);
         }
@@ -324,7 +339,7 @@ static int test_phase_tick(void)
         const uint32_t phase = random_u32();
         uint32_t count = random_u32();
         if (count == 0u) count = 1u;
-        CHECK(pc_phase_to_tick_u32(phase, count, &out));
+        CHECK(angulora_phase_to_tick_u32(phase, count, &out));
         CHECK(out == phase_tick_reference(phase, count) && out < count);
     }
     return 0;
@@ -337,21 +352,20 @@ static int test_hypot(void)
     uint32_t n;
     int32_t out = 77;
     for (i = 0u; i < 7u; ++i) for (j = 0u; j < 7u; ++j) {
-        const long double norm = sqrtl((long double)edge[i] * edge[i] + (long double)edge[j] * edge[j]);
-        const int64_t expected = round_even(norm);
-        const bool success = pc_q_hypot2(edge[i], edge[j], &out);
+        const uint32_t expected = reference_hypot_i32(edge[i], edge[j]);
+        const bool success = angulora_q_hypot2(edge[i], edge[j], &out);
         if (expected > INT32_MAX) CHECK(!success);
-        else CHECK(success && out == expected);
+        else CHECK(success && out == (int32_t)expected);
     }
     out = 77;
-    CHECK(!pc_q_hypot2(1, 1, NULL));
-    CHECK(!pc_q_hypot2(INT32_MIN, INT32_MIN, &out) && out == 77);
+    CHECK(!angulora_q_hypot2(1, 1, NULL));
+    CHECK(!angulora_q_hypot2(INT32_MIN, INT32_MIN, &out) && out == 77);
     for (n = 0u; n < 100000u; ++n) {
         const int32_t x = random_i32(), y = random_i32();
-        const int64_t expected = round_even(sqrtl((long double)x * x + (long double)y * y));
-        const bool success = pc_q_hypot2(x, y, &out);
+        const uint32_t expected = reference_hypot_i32(x, y);
+        const bool success = angulora_q_hypot2(x, y, &out);
         if (expected > INT32_MAX) CHECK(!success && out == 77);
-        else CHECK(success && out == expected);
+        else CHECK(success && out == (int32_t)expected);
         out = 77;
     }
     return 0;
@@ -361,11 +375,11 @@ static int test_stepper_angle(void)
 {
     uint32_t n;
     int32_t out = 55;
-    CHECK(!pc_stepper_angle_from_steps_q(1, 0u, &out) && out == 55);
-    CHECK(!pc_stepper_angle_from_steps_q(1, 1u, NULL));
-    CHECK(pc_stepper_angle_from_steps_q(1, UINT32_C(47185920), &out) && out == 0);
-    CHECK(pc_stepper_angle_from_steps_q(1, UINT32_C(15728640), &out) && out == 2);
-    CHECK(pc_stepper_angle_from_steps_q(-1, UINT32_C(15728640), &out) && out == -2);
+    CHECK(!angulora_stepper_angle_from_steps_q(1, 0u, &out) && out == 55);
+    CHECK(!angulora_stepper_angle_from_steps_q(1, 1u, NULL));
+    CHECK(angulora_stepper_angle_from_steps_q(1, UINT32_C(47185920), &out) && out == 0);
+    CHECK(angulora_stepper_angle_from_steps_q(1, UINT32_C(15728640), &out) && out == 2);
+    CHECK(angulora_stepper_angle_from_steps_q(-1, UINT32_C(15728640), &out) && out == -2);
     for (n = 0u; n < 100000u; ++n) {
         const int32_t steps = random_i32();
         uint32_t count = random_u32();
@@ -381,9 +395,9 @@ static int test_stepper_angle(void)
         expected = numerator < 0 ? -(int64_t)q : (int64_t)q;
         if (count == 0u) {
             out = 55;
-            CHECK(!pc_stepper_angle_from_steps_q(steps, 0u, &out) && out == 55);
+            CHECK(!angulora_stepper_angle_from_steps_q(steps, 0u, &out) && out == 55);
         } else {
-            const bool ok = pc_stepper_angle_from_steps_q(steps, count, &out);
+            const bool ok = angulora_stepper_angle_from_steps_q(steps, count, &out);
             if (expected < INT32_MIN || expected > INT32_MAX) CHECK(!ok && out == 55);
             else CHECK(ok && out == expected);
             out = 55;
@@ -403,7 +417,7 @@ static int test_stepper_angle(void)
                 if (r > counts[j] / 2u ||
                     ((counts[j] & 1u) == 0u && r == counts[j] / 2u && (q & 1u) != 0u)) ++q;
                 expected = numerator < 0 ? -(int64_t)q : (int64_t)q;
-                const bool ok = pc_stepper_angle_from_steps_q(steps[i], counts[j], &out);
+                const bool ok = angulora_stepper_angle_from_steps_q(steps[i], counts[j], &out);
                 if (expected < INT32_MIN || expected > INT32_MAX) CHECK(!ok);
                 else CHECK(ok && out == expected);
             }
@@ -416,13 +430,13 @@ static int test_microstep(void)
     static const uint32_t counts[] = {1u, 2u, 3u, 4u, 7u, 65535u, 65536u, UINT32_MAX};
     uint32_t n, out = 71u;
     unsigned i;
-    CHECK(!pc_stepper_microstep_phase_u32(0u, 0u, &out) && out == 71u);
-    CHECK(!pc_stepper_microstep_phase_u32(0u, 1u, NULL));
+    CHECK(!angulora_stepper_microstep_phase_u32(0u, 0u, &out) && out == 71u);
+    CHECK(!angulora_stepper_microstep_phase_u32(0u, 1u, NULL));
     for (i = 0u; i < sizeof counts / sizeof counts[0]; ++i) {
         unsigned k;
         for (k = 0u; k < 3u; ++k) {
             const uint32_t index = k == 0u ? 0u : (k == 1u ? counts[i] / 2u : counts[i] - 1u);
-            CHECK(pc_stepper_microstep_phase_u32(index, counts[i], &out));
+            CHECK(angulora_stepper_microstep_phase_u32(index, counts[i], &out));
             CHECK(out == microstep_reference(index, counts[i]));
         }
     }
@@ -430,10 +444,10 @@ static int test_microstep(void)
         uint32_t count = random_u32();
         const uint32_t index = random_u32();
         if (count == 0u) count = 1u;
-        CHECK(pc_stepper_microstep_phase_u32(index, count, &out));
+        CHECK(angulora_stepper_microstep_phase_u32(index, count, &out));
         CHECK(out == microstep_reference(index, count));
         if (index <= UINT32_MAX - count) {
-            CHECK(pc_stepper_microstep_phase_u32(index + count, count, &out));
+            CHECK(angulora_stepper_microstep_phase_u32(index + count, count, &out));
             CHECK(out == microstep_reference(index, count));
         }
     }
@@ -453,6 +467,6 @@ int main(void)
     RUN_API(8u, test_stepper_angle);
     RUN_API(9u, test_microstep);
 #undef RUN_API
-    puts("PASS: 8 callable APIs and pc_cpx_q public type; >=100000 seeded cases per applicable API");
+    puts("PASS: 8 callable APIs and angulora_cpx_q public type; >=100000 seeded cases per applicable API");
     return 0;
 }

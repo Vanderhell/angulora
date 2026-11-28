@@ -1,5 +1,5 @@
-#include "pc_cpx_to_polar_q.h"
-#include "pc_bearing2_q.h"
+#include <angulora/trigonometry/cpx_to_polar_q.h>
+#include <angulora/trigonometry/bearing2_q.h>
 #include <stddef.h>
 
 static uint64_t integer_sqrt_floor(uint64_t value)
@@ -24,13 +24,13 @@ static uint32_t magnitude_nearest_even(int32_t real, int32_t imag)
     return (uint32_t)root;
 }
 
-bool pc_cpx_to_polar_q(pc_cpx_q value, uint32_t *radius,
+bool angulora_cpx_to_polar_q(angulora_cpx_q value, uint32_t *radius,
                        uint32_t *phase_turns_q0_32)
 {
     uint32_t temporary_radius, temporary_phase;
     if (radius == NULL || phase_turns_q0_32 == NULL || radius == phase_turns_q0_32) return false;
     temporary_radius = magnitude_nearest_even(value.real, value.imag);
-    if (!pc_bearing2_q(0, 0, value.real, value.imag, &temporary_phase)) return false;
+    if (!angulora_bearing2_q(0, 0, value.real, value.imag, &temporary_phase)) return false;
     *radius = temporary_radius;
     *phase_turns_q0_32 = temporary_phase;
     return true;

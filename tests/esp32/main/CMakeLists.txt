@@ -1,5 +1,13 @@
 get_filename_component(ANGULORA_ROOT "${CMAKE_CURRENT_LIST_DIR}/../../.." ABSOLUTE)
-file(GLOB ANGULORA_SOURCES "${ANGULORA_ROOT}/src/*.c")
+set(ANGULORA_SOURCES
+    "${ANGULORA_ROOT}/src/angulora_bearing2_q.c"
+    "${ANGULORA_ROOT}/src/angulora_cartesian_to_polar_q.c"
+    "${ANGULORA_ROOT}/src/angulora_cpx_to_polar_q.c"
+    "${ANGULORA_ROOT}/src/angulora_mod_phase_unwrap_i32.c"
+    "${ANGULORA_ROOT}/src/angulora_phase_to_tick_u32.c"
+    "${ANGULORA_ROOT}/src/angulora_q_hypot2.c"
+    "${ANGULORA_ROOT}/src/angulora_stepper_angle_from_steps_q.c"
+    "${ANGULORA_ROOT}/src/angulora_stepper_microstep_phase_u32.c")
 set(ANGULORA_AUDIT_SOURCE "${ANGULORA_ROOT}/tests/test_audit.c")
 
 idf_component_register(
