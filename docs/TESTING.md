@@ -27,7 +27,7 @@ The strict local matrix is recorded here after execution of the productized sour
 | GCC 13.3.0 AddressSanitizer (Ubuntu 24.04 / WSL) | Debug | PASS, 12/12 |
 | GCC 13.3.0 UndefinedBehaviorSanitizer (Ubuntu 24.04 / WSL) | Debug | PASS, 12/12 |
 
-The host tests use strict C99 and warnings (`-Wall -Wextra -Wpedantic -Werror` or `/W4 /WX`). Both behavior tests use explicit failure paths. The current source changes still require a remote GitHub Actions run; hosted results must be tied to the final commit before the release gate can pass.
+All configurations used C99 with extensions disabled and strict warnings (`-Wall -Wextra -Wpedantic -Werror` or `/W4 /WX`). Both behavior tests use explicit failure paths. GitHub Actions run [46087454935](https://github.com/Vanderhell/angulora/actions/runs/46087454935) for source commit `96b35195db9ba9f35069bccc93d16991aaa93ba9` completed successfully: all six host configurations and both sanitizer jobs passed. A documentation-only follow-up is being validated separately.
 
 ## Reproduce
 
